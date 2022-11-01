@@ -8,3 +8,11 @@ class MongoSaveError(Exception):
 
 class MongoRepeatedUniqueKey(Exception):
     pass
+
+
+class InvalidDataType(Exception):
+    pass
+
+
+class InvalidDataPassed(Exception):
+    pass
