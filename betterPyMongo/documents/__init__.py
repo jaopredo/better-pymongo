@@ -1,6 +1,7 @@
 from ..data_types import GeneralType
 from pymongo.collection import Collection
 from ..errors import InvalidDataPassed
+from ..utility.colors import Colors
 
 
 class Meta(type):
@@ -23,13 +24,18 @@ class Document(object, metaclass=Meta):
     def save(self, data):
         collection = self.Configs.collection
 
-        self.check(data)
+        new_data = self.check(data)
 
-        collection.insert_one(data)
+        #collection.insert_one(new_data)
     
     def check(self, data: dict):
-        try:
-            for k, v in data.items():
-                self.fields[k].check_type(v)
-        except KeyError as e:
-            raise InvalidDataPassed(f"O dado {e.args[0]} não foi encontrado no Documento definido")
+        # Checando se tem os mesmos campos
+        for k, v in data.items():
+            if k not in self.fields.keys():
+                raise InvalidDataPassed(Colors.danger(f"The {k} field passed is not in the document fields"))
+            
+            
+
+            self.fields[k].check_type(v)
+            
+            data[k] = self.fields[k].make_changes(v)
